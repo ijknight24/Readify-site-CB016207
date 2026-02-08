@@ -39,7 +39,7 @@ const bookData = [
     },
     {
         id: 4,
-        title: "Harry Potter",
+        title: "Harry Potter and the Philosopher's Stone",
         author: "J.K. Rowling",
         genre: "Fantasy",
         length: "Medium",
@@ -72,7 +72,7 @@ const bookData = [
     },
     {
         id: 7,
-        title: "Sherlock Holmes",
+        title: "The Adventures of Sherlock Holmes",
         author: "Arthur Conan Doyle",
         genre: "Mystery",
         length: "Medium",
