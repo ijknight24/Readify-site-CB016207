@@ -1,0 +1,20 @@
+{
+  "name": "Readify",
+  "short_name": "Readify",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#43a047",
+  "icons": [
+    {
+      "src": "r images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "r images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

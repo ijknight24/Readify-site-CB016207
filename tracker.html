@@ -11,7 +11,7 @@
     <header>
         <nav>
             <div class="logo">
-            <img src="r images/logo.png" alt="Readify Logo" style="height: 160px; vertical-align: middle;">
+                <img src="r images/logo.png" alt="Readify Logo" style="height: 70px; vertical-align: middle;">
             </div>
             <button class="hamburger" onclick="toggleMenu()">☰</button>
             <ul id="nav-links">
@@ -29,10 +29,14 @@
         <div style="max-width: 600px; margin: 40px auto; padding: 20px; text-align: center;">
             <h2 style="color: var(--primary);">Reading Progress</h2>
             <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: var(--shadow);">
-                <input type="number" id="total" placeholder="Total Pages" style="width: 100%; margin-bottom: 10px;">
-                <input type="number" id="read" placeholder="Pages Read" style="width: 100%; margin-bottom: 10px;">
+                <input type="number" id="total" placeholder="Total Pages in Book" style="width: 100%; margin-bottom: 10px;">
+                <input type="number" id="read" placeholder="Pages Read So Far" style="width: 100%; margin-bottom: 10px;">
+                <input type="number" id="speed" placeholder="Your Speed (Pages per Day)" style="width: 100%; margin-bottom: 10px;">
+                
                 <button onclick="calculateProgress()" style="width: 100%;">Track Progress</button>
+                
                 <div id="result" style="margin-top: 20px; font-weight: bold; font-size: 1.2rem; color: var(--dark);"></div>
+                <div id="estimate" style="margin-top: 10px; font-size: 1rem; color: #666;"></div>
             </div>
         </div>
     </main>
@@ -41,12 +45,8 @@
         <div style="max-width: 1200px; margin: 0 auto;">
             <p style="margin-bottom: 10px;">&copy; 2026 Readify. All rights reserved.</p>
             <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-                <input type="email" id="newsletterEmail" placeholder="Enter your email" 
-                       style="padding: 10px; border-radius: 5px; border: none; width: 250px;">
-                <button onclick="saveNewsletter()" 
-                        style="background-color: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                    Subscribe
-                </button>
+                <input type="email" id="newsletterEmail" placeholder="Enter your email" style="padding: 10px; border-radius: 5px; border: none; width: 250px;">
+                <button onclick="saveNewsletter()" style="background-color: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Subscribe</button>
             </div>
             <div style="margin-top: 20px; font-size: 0.9rem; color: #b2bec3;">
                 <a href="index.html" style="color: #b2bec3; text-decoration: none; margin: 0 10px;">Home</a> |
@@ -58,18 +58,5 @@
 
     <script src="data.js"></script>
     <script src="script.js"></script>
-    <script>
-        function calculateProgress() {
-            const total = document.getElementById("total").value;
-            const read = document.getElementById("read").value;
-            if(total > 0) {
-                const pct = (read / total) * 100;
-                document.getElementById("result").innerText = `Progress: ${pct.toFixed(2)}%`;
-                localStorage.setItem("readingProgress", pct);
-            } else {
-                alert("Please enter a total page count!");
-            }
-        }
-    </script>
 </body>
 </html>

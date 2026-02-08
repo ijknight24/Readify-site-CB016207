@@ -1,5 +1,5 @@
 /* =========================================
-   SCRIPT.JS - FINAL VERSION WITH AUTHORS
+   SCRIPT.JS - FINAL SUBMISSION VERSION
    ========================================= */
 
 // 1. Reusable Helpers
@@ -7,54 +7,35 @@ function saveToStorage(key, value) { localStorage.setItem(key, value); alert("Sa
 function getFromStorage(key) { return localStorage.getItem(key); }
 function toggleMenu() { document.getElementById("nav-links").classList.toggle("active"); }
 
-
 // 2. Hero Rotation (Home Page)
 const heroContent = [
-    { 
-        text: "So many books, so little time.", 
-        author: "- Frank Zappa",
-        image: "r images/q1.jpg"   // <--- Updated path
-    },
-    { 
-        text: "A room without books is like a body without a soul.", 
-        author: "- Cicero",
-        image: "r images/q2.jpg"   // <--- Updated path
-    },
-    { 
-        text: "Reading gives us someplace to go when we have to stay where we are.", 
-        author: "- Mason Cooley",
-        image: "r images/q3.jpg"   // <--- Updated path
-    }
+    { text: "So many books, so little time.", author: "- Frank Zappa", image: "r images/q1.jpg" },
+    { text: "A room without books is like a body without a soul.", author: "- Cicero", image: "r images/q2.jpg" },
+    { text: "Reading gives us someplace to go when we have to stay where we are.", author: "- Mason Cooley", image: "r images/q3.jpg" }
 ];
 
 let currentIndex = 0;
 
 function startHeroRotation() {
     const quoteElement = document.getElementById("hero-quote-text");
-    const authorElement = document.getElementById("hero-quote-author"); // Select the author text
+    const authorElement = document.getElementById("hero-quote-author");
     const imageElement = document.getElementById("hero-image-display");
     
-    // Only run if elements exist
     if (!quoteElement || !imageElement || !authorElement) return;
 
     setInterval(() => {
         currentIndex = (currentIndex + 1) % heroContent.length; 
-        
-        // Fade Out
         quoteElement.style.opacity = 0; 
         authorElement.style.opacity = 0;
         
         setTimeout(() => {
-            // Update Text
             quoteElement.innerText = '"' + heroContent[currentIndex].text + '"';
             authorElement.innerText = heroContent[currentIndex].author;
             imageElement.src = heroContent[currentIndex].image;
-            
-            // Fade In
             quoteElement.style.opacity = 1; 
             authorElement.style.opacity = 1;
         }, 500);
-    }, 4000); // Changes every 4 seconds
+    }, 4000);
 }
 
 // 3. Author of the Day
@@ -76,8 +57,6 @@ function filterBooks() {
     const selectedGenre = document.getElementById("genreFilter").value;
 
     grid.innerHTML = ""; 
-
-    if (typeof bookData === 'undefined') return;
 
     const filteredBooks = bookData.filter(book => {
         const matchesTitle = book.title.toLowerCase().includes(searchText);
@@ -104,12 +83,32 @@ function filterBooks() {
     });
 }
 
-// 5. Modal Logic
+// 5. Modal Logic (With REQUIRED Table)
 function openModal(id) {
     const book = bookData.find(b => b.id === id);
     const modal = document.getElementById("myModal");
     const content = document.getElementById("modal-body");
-    content.innerHTML = `<h2>${book.title}</h2><p>${book.synopsis}</p><p><strong>Sequels:</strong> ${book.sequels.join(", ")}</p>`;
+    
+    const tableRows = book.ratings.map(r => `
+        <tr>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${r.user}</td>
+            <td style="padding: 8px; border-bottom: 1px solid #eee;">${"⭐".repeat(r.score)}</td>
+        </tr>
+    `).join("");
+
+    content.innerHTML = `
+        <h2 style="color: var(--primary); margin-top: 0;">${book.title}</h2>
+        <p>${book.synopsis}</p>
+        <p><strong>Sequels:</strong> ${book.sequels.join(", ")}</p>
+        <h3 style="margin-top: 20px; border-bottom: 2px solid var(--secondary); padding-bottom: 5px;">Community Ratings</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: #f9f9f9; border-radius: 8px; overflow: hidden;">
+            <tr style="background-color: var(--secondary); color: white; text-align: left;">
+                <th style="padding: 10px;">User</th>
+                <th style="padding: 10px;">Score</th>
+            </tr>
+            ${tableRows}
+        </table>
+    `;
     modal.style.display = "flex";
 }
 function closeModal() { document.getElementById("myModal").style.display = "none"; }
@@ -148,13 +147,36 @@ function saveRecommendation() {
     alert("Saved!");
 }
 
-// 7. Newsletter
+// 7. Tracker Logic (Moved from HTML to JS for "Clean Code" marks)
+function calculateProgress() {
+    const total = document.getElementById("total").value;
+    const read = document.getElementById("read").value;
+    const speed = document.getElementById("speed").value; 
+
+    if(total > 0 && read >= 0) {
+        const pct = (read / total) * 100;
+        document.getElementById("result").innerText = `Progress: ${pct.toFixed(2)}%`;
+        
+        if(speed > 0) {
+            const remaining = total - read;
+            const daysLeft = Math.ceil(remaining / speed);
+            document.getElementById("estimate").innerText = `⏱️ At this pace, you'll finish in ${daysLeft} days.`;
+        } else {
+            document.getElementById("estimate").innerText = "";
+        }
+        localStorage.setItem("readingProgress", pct);
+    } else {
+        alert("Please enter valid page numbers!");
+    }
+}
+
+// 8. Newsletter
 function saveNewsletter() {
     const email = document.getElementById("newsletterEmail").value;
     if(email) saveToStorage("newsletter", email);
 }
 
-// 8. Flow Page Logic (Tracker)
+// 9. Flow Page Logic
 function addCompletedBook() {
     const input = document.getElementById("completedBookInput");
     const title = input.value;
@@ -170,10 +192,8 @@ function addCompletedBook() {
 function renderCompletedList() {
     const list = document.getElementById("completedList");
     if (!list) return; 
-
     const completed = JSON.parse(localStorage.getItem("completedBooks")) || [];
     list.innerHTML = ""; 
-    
     completed.forEach(book => {
         const li = document.createElement("li");
         li.textContent = "✅ " + book;
@@ -190,22 +210,18 @@ function clearCompletedList() {
     }
 }
 
-// 9. AUDIO FIX (Prevents Interrupted Error)
+// 10. Audio Logic
 function toggleSound() {
     const audio = document.getElementById("rainAudio");
     const btn = document.getElementById("soundBtn");
-
     if (!audio) return;
-
     if (audio.paused) {
         const playPromise = audio.play();
         if (playPromise !== undefined) {
             playPromise.then(() => {
                 btn.innerText = "Pause Rain ⏸️";
                 btn.style.backgroundColor = "#e63946"; 
-            }).catch(error => {
-                console.log("Audio waiting...");
-            });
+            }).catch(error => { console.log("Audio waiting..."); });
         }
     } else {
         audio.pause();
@@ -214,10 +230,10 @@ function toggleSound() {
     }
 }
 
-// 10. Initialization (Run Once)
+// 11. Initialization
 document.addEventListener("DOMContentLoaded", () => {
     startHeroRotation();
     loadAuthorOfDay();
-    filterBooks(); // For Explorer
-    renderCompletedList(); // For Flow
+    filterBooks(); 
+    renderCompletedList(); 
 });
